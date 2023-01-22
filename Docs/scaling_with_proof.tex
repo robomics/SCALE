@@ -1,0 +1,98 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage[english]{babel}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\title{Matrix Scaling Algorithm}
+\author{Moshe, Yossi, Jongwon, Neva, Muhammad, Adrian, ... ,Erez}
+\date{January 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Let $A$ be a (square) non-negative matrix. Balancing A is finding two diagonal matrices $D_1$ and $D_2$ with strictly positive elements such that $P = D_1 A D_2$ is doubly stochastic, i.e. the sum of each row and the sum of each column of P are 1.  
+
+In 1967 Sinkhorn and Knopp \cite{sinkhorn1967concerning} showed that such matrices $D_1$ and $D_2$ exist if and only if $A$ has total support. To prove that if $A$ has total support it can be balanced they have proved that by alternatively scaling rows and columns of $A$ to have the sum of 1 converges to a doubly stochastic matrix $P$ and that the left and right diagonal matrices involved in the process converge to finite diagonal matrices with strictly positive entries. They have also proved that the matrix $P$ is unique and the matrices $D_1$ and $D_2$ are unique up to a multiplication by a scalar. It is worth mentioning that they have also proved that if A has support but not total support then still the matrices produced by the algorithm converge to a doubly stochastic matrix but the corresponding left and right diagonal matrices do not converge to finite diagonal matrices.  
+
+Now suppose that $A$ is a symmetric matrix. If $P = D_1 A D_2$ is doubly stochastic then $P^t = D_2 A D_1$ is also doubly stochastic. From the uniqueness part of Sinkhorn-Knopp Theorem it follows that $D_1$ equals $D_2$ up to multiplication by a positive scalar and so we can take $D_1 = D_2 = D$ such that $P = D A D$ is doubly stochastic (and such $D$ is unique). The above algorithm still works but it does not preserve the symmetry, even though asymptotically the symmetry is preserved. In 2011 Ruiz and Uçar \cite{uccar2011symmetry} proposed a bit different algorithm: at each iteration each row (and column) of $A$ are scaled by a square root of the row sum. They have proved that if $A$ has total support then the matrices converge to the doubly stochastic matrix and the corresponding diagonal matrices converge to a finite strictly positive diagonal matrix.
+
+ Let $A$ be a non-negative (square - even though it is not a requirement) matrix and let $r$ and $c$ be two positive vectors such that $\sum r_i = \sum c_j$.  We are looking for two matrices $D_r$ and $D_c$ such that $D_r A D_c$ has row sums equal to $r$ and column sums equal to $c$. Note that matrix balancing is a special case of matrix scaling where all the entries of $r$ and $c$ are 1. In 1967 Sinkhorn \cite{sinkhorn1967diagonal} proved that if $A$ is positive (all its entries are positive) then such matrices $D_r$ and $D_c$ exist and unique (up to multiplication by a positive scalar). To prove the existence of $D_r$ and $D_c$ Sinkhorn showed that a slight modification of SK algorithm converges to the solution. His algorithm is as follows:
+ 
+ Let ${D_r}^{(0)} = I$, ${D_c}^{(0)} = I$. 
+ 
+ For $k \ge 0$ let 
+ 
+ $R = \sum_j {A_{ij}}^{(k))}$
+ 
+ ${D_r^{(k+1)}} = \frac{D_r^{(k)} \cdot r}{R} $
+ 
+ $B = {D_r}^{(k+1)} A {D_c}^{(k)}$
+ 
+ $C = \sum_i {B_{ij}}$
+ 
+  ${D_c^{(k+1)}} = \frac{D_c^{(k)} \cdot c}{C} $
+  
+   $A^{(k+1)} = {D_r}^{(k+1)} A {D_c}^{(k+1)}$
+
+  
+Then ${D_r}^{(k)}$, ${D_c}^{(k)}$ and $A^{(k)}$ converge to $D_r$, $D_c$ and $P$ respectively (and row sums of $P$ are $r$ and column sums are $c$). We will call this Sinkhorn's algorithm or IPS.
+
+In our case $A$ is symmetric but not positive. For a given positive vector $r$ we are looking for a diagonal matrix $D$ (with strictly positive entries) such that $D A D$ has row (and hence column) sums equal to $r$. Under what conditions such matrix $D$ exists and how can it be computed?
+
+Now it is not necessary for $A$ to have total support. For example, if 
+
+$A=\begin{bmatrix}
+    0 & 1 \\
+    1 & 1
+  \end{bmatrix}$
+  
+  then $A$ does not have total support. For any vector $r = (r_1 , r_2)$ such that $r_1 < r_2$ there exists diagonal matrix $D$ such that $D A D$ has row and column sums equal to $r$. However, if $r_1 \ge r_2$ then such $D$ does not exist. So the existence of $D$ depends on both $A$ and $r$ and not just on $A$.
+  
+  It has been shown \cite{menon1968}, \cite{sinkhorn1974} that for any non-negative matrix $A$ and positive vectors $r$ and $c$ there exist diagonal matrices $D_r$ and $D_c$ such that $D_r A D_c$ has row sums equal to $r$ and column sums equal to $c$ if and only if there exists a non-negative matrix $B$ with row sums equal to $r$ and column sums equal to $c$ which has same zeroes structure as $A$, i.e. $B_{ij} = 0$ iff $A_{ij} = 0$.
+  
+  In our case matrix $A$ is symmetric (and non-negative).  In 1974 Brualdi \cite{brualdi1974} proved that for such matrix and a positive vector $r$ there exists a diagonal matrix $D$ such that $DAD$ has row (and column) sums $r$ if and only if there exists a symmetric non-negative matrix $B$ with same pattern as $A$ ($B_{ij} = 0 \iff A_{ij} = 0$) such that row (and column) sums of $B$ equal $r$. Moreover, in such case matrix $D$ is unique.
+  
+  \textbf{Lemma 1:} Let $A$ be symmetric non-negative matrix with strictly positive main diagonal. Then for any positive vector $r$ there exists a symmetric matrix $B$ with the pattern of $A$ such that row sums of $B$ equal $r$.
+  
+  \textbf{Proof:} Let $A$ be an $n \times n$ and let $d = min\{r_i\}$. Take $\epsilon = \frac{d}{n}$. Let $n_i$ be the number of non-zero off diagonal elements in row $i$ of $A$. Now define matrix $B$ by: for any $i \ne j$ such that $A_{ij} > 0$, $B_{ij} = \epsilon$ and for $1 \le  i \le n, B_{ii} = r_i - n_i \cdot \epsilon$. And $B_{ij} = 0$ whenever $A_{ij} = 0$. Since $n_i \le n-1$, $B_{ii} > 0$ and it is easy to see that $\sum_j {b_{ij}} = r_i$ for $1 \le i \le n$.
+  
+  So by Brualdi's result we know that for such matrix $A$ there exists a (unique) diagonal matrix $D$ such that $DAD$ has row (and column) sums equal to $r$. How do we find such matrix $D$?
+  
+  In 1980 Pretzel \cite{pretzel1980} proved that if there exists a non-negative matrix $B$ with zero pattern of $A$, row sums $r$ and column sums $c$ then what he calls Modified IPS, which is Sinkhorn's  algorithm above with one modification: at each step $k$ the matrices $D_R^{(k)}$ and $D_C^{(k)}$ are scaled in such a way that $D_C^{(k)}(1,1) = 1$, converges in the sense that $D_R^{(k)}$ converges to $D_R$, $D_C^{(k)}$ converges to $D_C$ and the matrix $D_RAD_C$ has row sums $r$ and column sums $c$. 
+  
+  Now suppose that $A$ is also symmetric and $r = c$. Then row sums and column sums of $D_RAD_C$ above equal $r$. On the other hand, there exists a matrix $D$ such that $DAD$ has row and column sums equal to $r$. Menon \cite{menon1968} proved that if there exists no permutation matrix $P$ such that $PAP$ is a direct some of block matrices, the scaling is unique up to a scalar and so $\sqrt{D_RD_C} = D$. Otherwise this is true for every block of $A$ and therefore for entire $A$.
+  
+  Finally, let us note that since we take $D = \sqrt{D_RD_C}$, whether we use Modified IPS or just IPS makes no difference since the scalings of $D_R$ and $D_C$ cancel each other. 
+  
+  So we have proved the following
+  
+  \textbf{Theorem 1:} If $A$ is a symmetric non-negative matrix with positive main diagonal and $r$ is a positive vector then there exists a diagonal matrix $D$ such that $DAD$ has row (and column) sums equal to $r$ and if we use Sinkhorn's (1967) algorithm and at each iteration have $D^{(k)} = \sqrt{D_R^{(k))}D_C^{(k)}}$ then $D^{(k)}$ converges to $D$.
+  
+  \section{Practical Implementation}
+  
+ In our case some rows of $A$ are zero and in some cases the row is not zero but there is a 0 on the main diagonal. We exclude such rows and return NaN for the corresponding positions of the scaling vector.
+ 
+ Some entries in the target vector may also be 0. This does not pose any problem if we exclude them and then make the corresponding entries in the scaling vector 0.
+ 
+ These two adjustments are sufficient to guarantee convergence. But it may be extremely slow (may require thousands and even millions of iterations). To speed up the convergence we also exclude a small percentage of rows of $A$ with the lowest row sums and even smaller percentage of indexes of the target vector with smallest (of non-zero) and largest values. We return NaN for the corresponding entries in the scaling vector.
+ 
+ This is our implementation.
+ 
+ Finally, the matrix $A$ is usually very large and sparse (for a human genome at 1 kb resolution it is about $3000000 \times 3000000$). So it can not even be kept in RAM and even if it could, any operations with such huge matrix would be extremely time-consuming. So the matrix $A$ is kept in triplet format, i.e. any non-zero element of $A$ is represented by a triplet: row index, column index and value. Row and column indexes are integers and to save space we store the values as floats (4 bytes). Moreover, since $A$ is symmetric, only the upper triangle of $A$ is kept. We have also written a function for fast matrix vector multiplication (when the matrix is in sparse upper triangular form). This function takes more than 90\% of the computation time but it can be run in several threads to speed it up.
+  
+\bibliographystyle{ieeetr_noq}
+%\bibliographystyle{te}
+\bibliography{Scaling} % Entries are in the "Scaling.bib" file
+
+\end{document}
