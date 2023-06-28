@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "scale/scale.hpp"
+
 /********************************************************************************************************************
 *
 *	m is the number of nonzero elements

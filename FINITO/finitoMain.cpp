@@ -6,13 +6,10 @@
 #include <ctime>
 #include <cmath>
 #include <unistd.h>
+
+#include "scale/scale.hpp"
+
 using namespace std;
-
-int balance(long m,unsigned int *i,unsigned int *j,float *x, double *b, double *report,int *allIters, double tol,int *llow, int maxiter, double del, int *totIter, int threads, unsigned int k, double *pppp, int width);
-
-unsigned int getMatrix(string fname, int binsize, string norm, unsigned int **i, unsigned int **j, float **x, long *m, string ob, string chr);
-
-double ppNormVector(long m,unsigned int *ii,unsigned int *jj,float *xx, double *b,unsigned int k, int threads, double **space);
 
 static void usage(const char *argv0)
 {
@@ -28,7 +25,7 @@ int main(int argc, char *argv[]) {
 	time_t t0,t1;
 
 	string ob("observed");
-	string norm_name("SCALA");
+	string norm_name("SCALE");
 	double tol=1.0e-4;
 	double del=5.0e-2;
 	double perc = 0.01;

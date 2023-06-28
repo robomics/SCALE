@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "scale/scale.hpp"
+
 struct th2 {
 	unsigned int *i;
 	unsigned int *j;
@@ -24,6 +26,7 @@ void *Mul(void *threadid) {
                res[i[p]] += x[p]*v[j[p]];
                res[j[p]] += x[p]*v[i[p]];
 	}
+        return nullptr;
 }
 
 void utmvMul(unsigned int *i,unsigned int *j,float *x,long m,double *v,unsigned int k,double *res, int nth, double **rs) {

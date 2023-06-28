@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "scale/scale.hpp"
+
 void utmvMul(unsigned int *i,unsigned int *j,float *x,long m,double *v,unsigned int k,double *res, int threads, double **space);
 
 double ppNormVector(long m,unsigned int *ii,unsigned int *jj,float *xx, double *b,unsigned int k, int threads, double **space) {
