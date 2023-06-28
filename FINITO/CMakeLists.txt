@@ -32,6 +32,12 @@ set_target_properties(scale_tools PROPERTIES OUTPUT_NAME scale)
 target_sources(scale_tools PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/finitoMain.cpp ${CMAKE_CURRENT_SOURCE_DIR}/getSingleMatrix.cpp ${CMAKE_CURRENT_SOURCE_DIR}/getGWMatrix.cpp)
 target_link_libraries(scale_tools PUBLIC scale _scale_strawlib)
 
+add_executable(scale_tools_cpp)
+set_target_properties(scale_tools_cpp PROPERTIES OUTPUT_NAME scale_cpp)
+
+target_sources(scale_tools_cpp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/getSingleMatrix.cpp ${CMAKE_CURRENT_SOURCE_DIR}/getGWMatrix.cpp)
+target_link_libraries(scale_tools_cpp PUBLIC scale _scale_strawlib)
+
 
 include(GNUInstallDirs)
 install(

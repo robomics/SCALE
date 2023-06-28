@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 	for (p=0; p<m;p++) if (jj[p] == ii[p]) xx[p] *= 0.5;
 
 
-	double *b = (double *) malloc(k*sizeof(double));
+	std::vector<double> b(k);
 	for (p=0;p<k;p++) b[p] = NAN;
 	int totalIt = All_iter;
 	double *report = (double *) malloc((All_iter+3+100)*sizeof(double));
@@ -129,8 +129,14 @@ int main(int argc, char *argv[]) {
 
 	int iter;
 	time(&t0);
-	iter =  balance(m,ii,jj,xx, b, report,allIters, tol,&low, maxiter, del, &totalIt, threads, k, &perc,width);
+	iter =  balance(m,ii,jj,xx, b.data(), report,allIters, tol,&low, maxiter, del, &totalIt, threads, k, &perc,width);
 	time(&t1);
+
+
+
+  for (const auto&w: b) {
+    printf("%f\n", w);
+  }
 
 	if (verb) printf("iterations took %ld seconds\n",t1 - t0);
 	if (verb > 1) for (p=0;p<totalIt;p++) printf("%d: %30.15lf\n",allIters[p],report[p]);
@@ -139,7 +145,7 @@ int main(int argc, char *argv[]) {
 
 	double **space = (double **) malloc(threads*sizeof(double *));
 	for (p=0;p<threads; p++) space[p] = (double *) malloc(k*sizeof(double));
-	double sum = ppNormVector(m,ii,jj,xx,b,k,threads,space);
+	double sum = ppNormVector(m,ii,jj,xx,b.data(),k,threads,space);
 
 	fprintf(fout,"vector %s %s %d BP\n",const_cast<char*> (norm_name.c_str()),const_cast<char*> (chr.c_str()),binsize);
 	for (int p=0;p<k;p++) {
